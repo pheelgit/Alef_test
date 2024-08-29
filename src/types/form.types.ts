@@ -1,6 +1,6 @@
 type PeopleType = {
-  name: string
-  years: number
+  name: string | undefined
+  years: number | undefined
 }
 export type ChildrenType = PeopleType & {
   id: number

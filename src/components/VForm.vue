@@ -3,13 +3,34 @@ import VTextBox from '@/components/VTextBox.vue'
 import { useFormStore } from '@/stores/form'
 import VNumberBox from '@/components/VNumberBox.vue'
 import ChildList from '@/components/ChildList.vue'
+import { onMounted, reactive } from 'vue'
+import type { IParent } from '@/types/form.types'
 
 const formStore = useFormStore()
 
-const handleChangeName = (e: any) => {
-  console.log(e)
-  formStore.changeParentName(e)
+const formState: IParent = reactive({
+  name: undefined,
+  years: undefined,
+  children: []
+})
+
+const addChild = () => {
+  formState.children.push({ id: Date.now(), name: undefined, years: undefined })
 }
+const removeChild = (id: number) => {
+  const index = formState.children.findIndex((item) => item.id === id)
+  if (index !== -1) {
+    formState.children.splice(index, 1) // Удаляем элемент по индексу
+  }
+}
+
+const updateLocalState = () => {
+  formState.name = formStore.state.name
+  formState.years = formStore.state.years
+  formState.children = [...formStore.state.children]
+}
+
+onMounted(updateLocalState)
 </script>
 
 <template>
@@ -17,13 +38,9 @@ const handleChangeName = (e: any) => {
     <div class="form-block parent-data">
       <div class="form-block--title">Персональные данные</div>
       <div class="parent">
-        <v-text-box
-          v-model:value="formStore.state.name"
-          label="Имя родителя"
-          @change-text="handleChangeName"
-        />
+        <v-text-box v-model:value="formState.name" label="Имя родителя" />
 
-        <v-number-box v-model:value="formStore.state.years" label="Возраст родителя" />
+        <v-number-box v-model:value="formState.years" label="Возраст родителя" />
       </div>
     </div>
 
@@ -31,15 +48,19 @@ const handleChangeName = (e: any) => {
       <div class="form-block--title">
         Дети (макс.5)
         <button
-          v-if="formStore.numberOfChildren < 5"
+          v-if="formState.children.length < 5"
           class="children-data--add-button"
-          @click="formStore.addChild"
+          @click="addChild"
         >
           Добавить ребенка
         </button>
         <br />
-        <child-list :children="formStore.state.children" />
+        <child-list :children="formState.children" :remove-child="removeChild" />
       </div>
+    </div>
+
+    <div class="form-block">
+      <button @click="formStore.updateForm(formState)">Сохранить</button>
     </div>
   </div>
 </template>
@@ -47,6 +68,7 @@ const handleChangeName = (e: any) => {
 <style scoped>
 .form-wrapper {
   max-width: 616px;
+  min-width: 400px;
   position: relative;
 }
 .form-block--title {

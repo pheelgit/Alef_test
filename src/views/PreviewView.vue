@@ -6,14 +6,18 @@ const formStore = useFormStore()
 <template>
   <div class="preview-wrap">
     <span>Персональные данные</span>
-    <span class="bold">{{ formStore.state.name }}, {{ formStore.state.years }} лет</span>
+    <span class="bold"
+      >{{ formStore.state.name || 'Введите имя' }},
+      {{ formStore.state.years || 'Введите возраст' }} лет</span
+    >
     <br />
     <br />
 
     <span>Дети</span>
-    <span class="child-badge bold" v-for="child of formStore.state.children" :key="child.id">
-      {{ child.name }}, {{ child.years }} лет
-    </span>
+    <div class="child-badge bold" v-for="child of formStore.state.children" :key="child.id">
+      {{ child.name || 'Введите имя ребенка' }}, {{ child.years || 'Введите возраст ребенка' }}
+      {{ child.years && 'лет' }}
+    </div>
   </div>
 </template>
 
@@ -27,5 +31,6 @@ const formStore = useFormStore()
 .child-badge {
   font-weight: bold;
   background-color: gray;
+  margin-bottom: 1em;
 }
 </style>
