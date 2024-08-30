@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 const value = defineModel('value')
 const props = defineProps<{ label: string }>()
+const isFocused = ref(false)
+const onFocus = () => {
+  isFocused.value = true
+}
+
+const onBlur = () => {
+  isFocused.value = false
+}
 </script>
 
 <template>
-  <div>
-    <label> {{ props.label }}</label>
-    <input type="number" v-model="value" />
+  <div class="custom-input">
+    <label :class="{ active: isFocused || value }"> {{ props.label }}</label>
+    <input type="number" v-model="value" @focus="onFocus" @blur="onBlur" />
   </div>
 </template>
 

@@ -1,4 +1,5 @@
 /*@import './base.css';*/
+@import './custom-input.css';
 
 html,body,#app{
   height: 100%;

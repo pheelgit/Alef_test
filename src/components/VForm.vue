@@ -5,6 +5,7 @@ import VNumberBox from '@/components/VNumberBox.vue'
 import ChildList from '@/components/ChildList.vue'
 import { onMounted, reactive } from 'vue'
 import type { IParent } from '@/types/form.types'
+import VButton from '@/components/VButton.vue'
 
 const formStore = useFormStore()
 
@@ -47,20 +48,21 @@ onMounted(updateLocalState)
     <div class="form-block children-data">
       <div class="form-block--title">
         Дети (макс.5)
-        <button
+        <v-button
           v-if="formState.children.length < 5"
-          class="children-data--add-button"
+          text="Добавить ребенка"
+          type="outlined"
+          icon-name="Plus"
           @click="addChild"
-        >
-          Добавить ребенка
-        </button>
+        />
+
         <br />
         <child-list :children="formState.children" :remove-child="removeChild" />
       </div>
     </div>
 
     <div class="form-block">
-      <button @click="formStore.updateForm(formState)">Сохранить</button>
+      <v-button text="Сохранить" type="primary" @click="formStore.updateForm(formState)" />
     </div>
   </div>
 </template>
